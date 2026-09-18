@@ -1,0 +1,415 @@
+/* ==========================================================
+   1. VARIABLES
+   Define the palette once. Every color below is reused across
+   the whole file via var(--name) instead of being retyped.
+   ========================================================== */
+:root{
+  --bg:#F3F4F0;
+  --bg-alt:#EAEBE4;
+  --ink:#16241F;
+  --ink-soft:#4B564F;
+  --teal:#1C5C52;
+  --teal-light:#4FA893;   /* lighter teal, used on dark backgrounds for contrast */
+  --ochre:#B98B34;
+  --line:#D3D6CC;
+
+  --radius:8px;
+  --max-width:1200px;
+}
+
+/* ==========================================================
+   2. RESET
+   Browsers ship inconsistent default margins/padding on
+   elements. box-sizing:border-box makes width/height include
+   padding+border, which is much easier to reason about.
+   ========================================================== */
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+html{ scroll-behavior:smooth; }
+
+body{
+  font-family:'Work Sans', sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  line-height:1.6;
+}
+
+h1, h2, h3{
+  font-family:'Fraunces', serif;
+  font-weight:500;
+  line-height:1.15;
+}
+
+a{ color:inherit; text-decoration:none; }
+img{ display:block; max-width:100%; } /* images never overflow their container */
+
+.wrap{
+  max-width:var(--max-width);
+  margin:0 auto;
+  padding:0 5%;
+}
+
+/* ==========================================================
+   3. HEADER / NAV
+   Flexbox is the right tool whenever you have items in a row
+   (or column) that need spacing/alignment — here, logo left,
+   links right.
+   ========================================================== */
+.header-container{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:1.25rem 5%;
+  position:sticky;   /* stays pinned to the top while scrolling */
+  top:0;
+  background:var(--bg);
+  border-bottom:1px solid var(--line);
+  z-index:100;
+}
+
+.brand{
+  font-family:'Fraunces', serif;
+  font-size:1.25rem;
+  font-weight:600;
+}
+
+.navigation nav ul{
+  display:flex;
+  list-style:none;
+  gap:2rem;
+}
+
+.navigation nav a{
+  color:var(--ink-soft);
+  font-size:0.95rem;
+  border-bottom:1px solid transparent;
+  padding-bottom:2px;
+  transition:color .2s ease, border-color .2s ease;
+}
+
+.navigation nav a:hover{
+  color:var(--teal);
+  border-color:var(--teal);
+}
+
+/* ==========================================================
+   4. HERO (title left, photo right on desktop)
+   Flexbox again: two children, one flexible (the text) and
+   one fixed-width (the photo).
+   clamp(min, preferred, max) below is what makes the heading
+   resize fluidly instead of jumping between fixed sizes.
+   ========================================================== */
+.hero{
+  overflow:hidden;
+}
+
+.hero_container{
+  max-width:var(--max-width);
+  margin:0 auto;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:3rem;
+  padding:6rem 5%;
+  position:relative;
+  z-index:2;             /* sits above the mobile background photo/overlay */
+}
+
+.hero_content{
+  flex:1;
+  max-width:520px;
+}
+
+.hero_eyebrow{
+  color:var(--ochre);
+  font-size:0.95rem;
+  margin-bottom:0.75rem;
+}
+
+.hero h1{
+  font-size:clamp(2rem, 5vw, 3.5rem);   /* scales between 2rem and 3.5rem based on viewport width */
+  max-width:11ch;
+}
+
+.hero_role{
+  font-family:'Fraunces', serif;
+  color:var(--teal);
+  font-size:1.15rem;
+  margin-top:1rem;
+}
+
+.hero_content p{
+  color:var(--ink-soft);
+  max-width:46ch;
+  margin-top:1.25rem;
+}
+
+.hero_actions{
+  display:flex;
+  gap:1rem;
+  margin-top:2rem;
+}
+
+.btn{
+  display:inline-block;
+  padding:0.85rem 1.5rem;
+  font-size:0.95rem;
+  border-radius:4px;
+  transition:background .2s ease, color .2s ease;
+}
+
+.btn-primary{ background:var(--teal); color:#fff; }
+.btn-primary:hover{ background:#164A42; }
+
+.btn-ghost{ border:1px solid var(--ink); }
+.btn-ghost:hover{ background:var(--ink); color:#fff; }
+
+.photo-frame{
+  flex-shrink:0;
+  width:320px;
+  aspect-ratio:4/5;
+  border-radius:var(--radius);
+  overflow:hidden;
+  box-shadow:0 20px 40px -10px rgba(22,36,31,0.25);
+}
+
+.photo-frame img{
+  width:100%;
+  height:100%;
+  object-fit:cover;   /* crops the photo to fill the box without distorting it */
+}
+
+/* ==========================================================
+   5. BIODATA / "About Me" — the self-adjusting grid
+   auto-fit + minmax is the key line: the grid always tries to
+   fit as many 220px-minimum columns as will fit, and reflows
+   itself as the viewport changes. No breakpoints needed here.
+   ========================================================== */
+.biodata{
+  padding:5rem 0;
+  background:var(--bg-alt);
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+}
+
+.biodata .wrap{
+  text-align:center;
+  margin-bottom:3rem;
+}
+
+.biodata .wrap p{
+  color:var(--ink-soft);
+  margin-top:0.5rem;
+}
+
+.detail-grid{
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);   /* fixed at 3 columns — always an even 3x2 grid on desktop, regardless of window width */
+  gap:1px;
+  background:var(--line);   /* shows through the 1px gaps as thin dividing lines */
+  border:1px solid var(--line);
+  width:90%;                /* gutter of ~5% on each side while narrower than max-width */
+  max-width:var(--max-width);
+  margin:0 auto;             /* auto margins = always truly centered, even past max-width */
+}
+
+.detail-grid > div{
+  background:var(--bg);
+  padding:1.75rem 1.5rem;
+  border-top:2px solid transparent;
+  transition:border-color .2s ease;
+}
+
+.detail-grid > div:hover{
+  border-top-color:var(--teal);
+}
+
+.detail-grid dt{
+  font-family:'Fraunces', serif;
+  font-style:italic;
+  color:var(--ochre);
+  font-size:0.85rem;
+  margin-bottom:0.5rem;
+}
+
+.detail-grid dd{
+  font-weight:500;
+}
+
+/* ==========================================================
+   6. PORTFOLIO — same auto-fit trick, different min width
+   ========================================================== */
+.portfolio{
+  padding:6rem 0;
+}
+
+.section_head{
+  text-align:center;
+  margin-bottom:3rem;
+}
+
+.section_head p{
+  color:var(--ink-soft);
+  margin-top:0.5rem;
+}
+
+.portfolio_grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));
+  gap:2rem;
+}
+
+.project_card img{
+  width:100%;
+  aspect-ratio:16/11;
+  object-fit:cover;
+  border-radius:var(--radius);
+  margin-bottom:1.25rem;
+}
+
+.project_card h3{
+  font-size:1.15rem;
+  margin-bottom:0.5rem;
+}
+
+.project_card p{
+  color:var(--ink-soft);
+  font-size:0.92rem;
+  margin-bottom:1rem;
+}
+
+.project_card a{
+  color:var(--teal);
+  font-size:0.9rem;
+  border-bottom:1px solid var(--teal);
+  padding-bottom:2px;
+}
+
+/* ==========================================================
+   7. FOOTER / CONTACT
+   ========================================================== */
+.contact{
+  border-top:1px solid var(--line);
+  padding:2.5rem 0;
+}
+
+.contact_wrap{
+  max-width:var(--max-width);
+  margin:0 auto;
+  padding:0 5%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:1rem;
+}
+
+.contact_wrap p{
+  font-size:0.9rem;
+  color:var(--ink-soft);
+}
+
+.socials{
+  display:flex;
+  gap:1.5rem;
+}
+
+.socials a{
+  font-size:0.9rem;
+  color:var(--ink-soft);
+}
+
+.socials a:hover{ color:var(--teal); }
+
+/* ==========================================================
+   8. MEDIA QUERY — mobile hero: photo and text as two
+   separate, non-overlapping blocks, stacked vertically.
+   Above 768px, section 4's flex rules put them side by side.
+   Below 768px, we switch the flex-direction to column and let
+   `order` decide which block appears on top — no absolute
+   positioning, no z-index, no overlay: they simply never touch.
+   ========================================================== */
+@media (max-width:768px){
+
+  /* stack nav links under the brand instead of squeezing them */
+  .header-container{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:0.75rem;
+  }
+  .navigation nav ul{ gap:1.25rem; flex-wrap:wrap; }
+
+  /* mobile: photo and text stacked as two separate blocks —
+     the photo is NOT behind, under, or overlapping the text at
+     any point. flex-direction:column puts them one above the
+     other in normal document flow; order controls which one
+     appears visually first. */
+  .hero_container{
+    flex-direction:column;
+    align-items:stretch;
+    gap:0;
+    padding:0;
+  }
+
+  .hero_content{
+    order:2;               /* text renders below the photo */
+    max-width:none;
+    padding:2rem 6% 2.5rem;
+  }
+
+  .photo-frame{
+    order:1;                /* photo renders above the text */
+    position:static;        /* back in normal flow — not absolute, not layered under anything */
+    width:100%;
+    aspect-ratio:4/3;
+    border-radius:0;
+    box-shadow:none;
+  }
+
+  .hero_content p{ color:var(--ink-soft); }  /* default readable color — no photo behind it, so no white/contrast tricks needed */
+
+  .hero_actions{ margin-top:1.5rem; }
+
+  /* tighten section padding generally on small screens */
+  .biodata, .portfolio{ padding:3.5rem 0; }
+  .detail-grid{
+    width:88%;
+    margin:0 auto;
+    grid-template-columns:1fr;   /* explicit override: stack to a single column, a deliberate 6x1, not auto-calculated */
+  }
+}
+
+/* ==========================================================
+   9. OPTIONAL UPGRADE — text wrapping around a transparent-PNG
+   cutout, using CSS Shapes (shape-outside).
+   This is NOT active by default — it requires a PNG whose
+   background is already transparent (made in an image editor,
+   e.g. remove.bg, Photopea, Photoshop). CSS cannot remove a
+   background itself; shape-outside only reads alpha transparency
+   that already exists in the file.
+   To use it: replace the url() below with your transparent PNG,
+   and add class="shape-photo" to the img element in your HTML
+   (instead of — or alongside — .photo-frame's current img).
+   ========================================================== */
+.shape-photo{
+  float:right;
+  width:280px;
+  margin:0 0 1rem 2rem;
+  shape-outside:url('your-transparent-photo.png');  /* the wrap contour is read from this image's alpha channel */
+  shape-image-threshold:0.5;   /* pixels with alpha below 50% are treated as "outside" the shape */
+  shape-margin:1rem;           /* breathing room between the text and the silhouette's edge */
+}
+
+/* Optional middle step for tablets: 3x2 is fine down to 768px,
+   but between 768px and ~480px, 3 columns get visually cramped
+   before the mobile breakpoint kicks in. This gives a clean 2x3
+   in between, still an explicit, predictable count. */
+@media (max-width:768px) and (min-width:481px){
+  .detail-grid{
+    grid-template-columns:repeat(2, 1fr);
+  }
+}
